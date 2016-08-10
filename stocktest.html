@@ -6,141 +6,61 @@ td {
 }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-
-
 <script>
-
-
 $(document).ready(function(){
 
 var getColorForPercentage = function(pct) {
-
-	
 	var cfac=(Math.abs(pct)/5);
-	
 	var ccode=0;
 	if(pct<0)
 		ccode='rgba(255,0,0,'+cfac+')';
 	else
 		ccode='rgba(0,255,0,'+cfac+')';
-	
-	
+
     return ccode;
-    // or output as hex if preferred
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function fetchStocks(){
 
+	var bseStocks=$("#bseList").val().split(",");
+	var nseStocks=$("#nseList").val().split(",");
 
+	var apiURL="https://www.google.com/finance/info?q="+"BOM:"+bseStocks+",NSE:"+nseStocks;
 
-
-
-//var bseStocks=['500112','500247'];
-//var nseStocks=['SBIN','Grasim', 'tcs', 'bankbaroda', 'adaniports'];
-
-
-
-var bseStocks=$("#bseList").val().split(",");
-var nseStocks=$("#nseList").val().split(",");
-
-
-
-
-var apiURL="https://www.google.com/finance/info?q="+"BOM:"+bseStocks+",NSE:"+nseStocks;
-
-
-
-$.ajax({
-	
-     url:apiURL,
-     dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
-     success:function(json){
-         // do stuff with json (in this case an array)
-		 
-		 
-         //console.log(json);
-		 
-		 var jo = json;
-
-		//alert('The JSON object has this many elements: ' + jo.length);
-
-		// let's make a table out of the first element for fun
-
-		var $table = $('#firstItem');
-		
-		$table.append("<table><tr><td> Stock ID </td><td> Exchange </td><td> Last Price </td><td> Last Time </td><td> Change  </td><td> Change Percentage </td></tr>");
-		
+	$.ajax({
+		 url:apiURL,
+		 dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
+		 success:function(json){
+			 //console.log(json);
+			 
+			 var jo = json;
+			var $table = $('#firstItem');
+			$table.append("<table><tr><td> Stock ID </td><td> Exchange </td><td> Last Price </td><td> Last Time </td><td> Change  </td><td> Change Percentage </td></tr>");
+					//t, e, l, lt, c, cp
+					//alert(jo[i].t)
+					
+			for(var i=0;i<jo.length;i++){
+				$table.append("<tr style='background:"+getColorForPercentage(jo[i].cp)+"'><td>"+jo[i].t+"</td><td>"+jo[i].e+"</td><td>"+jo[i].l+"</td><td>"+jo[i].lt+"</td><td>"+jo[i].c+"</td><td>"+jo[i].cp+"</td></tr>");
+			}
 			
+			$table.append("</table>");
 
-
-				//t, e, l, lt, c, cp
-				
-				//alert(jo[i].t)
-				
-		for(var i=0;i<jo.length;i++){
-		//alert(getColorForPercentage(jo[i].cp))
-			$table.append("<tr style='background:"+getColorForPercentage(jo[i].cp)+"'><td>"+jo[i].t+"</td><td>"+jo[i].e+"</td><td>"+jo[i].l+"</td><td>"+jo[i].lt+"</td><td>"+jo[i].c+"</td><td>"+jo[i].cp+"</td></tr>");
-		
-		
-		
-
-			//$table.append("<tr><td>   --------------------------    </td></tr>");
-		}
-		
-		$table.append("</table>");
-		 
-		 
-		 
-     },
-     error:function(){
-         alert("Error");
-     }      
-});
-
-
+		 },
+		 error:function(){
+			 alert("Error");
+		 }      
+	});
 
 }
 
 
 $("#submit_btn").on("click",fetchStocks)
-
-
-
 });
-
-
 </script>
-
-
 <body>
-
-
-
-<table id="firstItem">
-</table>
-
-
-<p>BSE Stocks <input id="bseList" type="text" /></p>
-<p>NSE Stocks <input id="nseList" type="text" /></p>
-<p><input id="submit_btn" type="submit" value="Submit" /></p>
-
-
-
+	<table id="firstItem"></table>
+	<p>BSE Stocks <input id="bseList" type="text" /></p>
+	<p>NSE Stocks <input id="nseList" type="text" /></p>
+	<p><input id="submit_btn" type="submit" value="Submit" /></p>
 </body>
 </html>
