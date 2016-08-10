@@ -45,8 +45,6 @@ var getColorForPercentage = function(pct) {
 
 
 
-
-
 function fetchStocks(){
 
 
@@ -64,13 +62,21 @@ var nseStocks=$("#nseList").val().split(",");
 
 
 
-var apiURL="https://www.google.com/finance/info?q="+"BOM:"+bseStocks+",NSE:"+nseStocks;
+var apiURL="http://www.google.com/finance/info?q="+"BOM:"+bseStocks+",NSE:"+nseStocks;
 
- $.get(apiURL, function(data, status){
-       // alert("Data: " + data.split("//")[1] + "\nStatus: " + status);
-		var _data=data.split("//")[1];
-		
-		var jo = $.parseJSON(_data);
+
+
+$.ajax({
+	
+     url:apiURL,
+     dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
+     success:function(json){
+         // do stuff with json (in this case an array)
+		 
+		 
+         //console.log(json);
+		 
+		 var jo = json;
 
 		//alert('The JSON object has this many elements: ' + jo.length);
 
@@ -80,25 +86,7 @@ var apiURL="https://www.google.com/finance/info?q="+"BOM:"+bseStocks+",NSE:"+nse
 		
 		$table.append("<table><tr><td> Stock ID </td><td> Exchange </td><td> Last Price </td><td> Last Time </td><td> Change  </td><td> Change Percentage </td></tr>");
 		
-						/*
-					id	672834
-					t	500112
-					e	BOM
-					l	231.50
-					l_fix	231.50
-					l_cur	Rs.231.50
-					s	0
-					ltt	3:54PM GMT+5:30
-					lt	Aug 10, 3:54PM GMT+5:30
-					lt_dts	2016-08-10T15:54:37Z
-					c	-3.10
-					c_fix	-3.10
-					cp	-1.32
-					cp_fix	-1.32
-					ccol	chr
-					pcls_fix
-
-					*/
+			
 
 
 				//t, e, l, lt, c, cp
@@ -112,17 +100,17 @@ var apiURL="https://www.google.com/finance/info?q="+"BOM:"+bseStocks+",NSE:"+nse
 		
 		
 
-
-		/*$.each(jo[i], function (i, val) {
-				var $r = $('<tr>');
-				var $c = $('<td>').text(i).appendTo($r);
-				$c = $('<td>').text(val).appendTo($r);
-				$table.append($r);
-			});*/
 			//$table.append("<tr><td>   --------------------------    </td></tr>");
 		}
 		
 		$table.append("</table>");
+		 
+		 
+		 
+     },
+     error:function(){
+         alert("Error");
+     }      
 });
 
 
